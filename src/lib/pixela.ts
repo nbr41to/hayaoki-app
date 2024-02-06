@@ -1,0 +1,79 @@
+import {getPixelaToken, getPixelaUsername} from '@/utils';
+
+// Userの存在チェック
+export async function findPixelaUser(id: string) {
+  try {
+    const response = await fetch(`https://pixe.la/@${getPixelaUsername(id)}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+}
+
+// Userの追加
+export async function createPixelaUser(id: string): Promise<any> {
+  const response = await fetch(`https://pixe.la/v1/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      token: getPixelaToken(id),
+      username: getPixelaUsername(id),
+      agreeTermsOfService: 'yes',
+      notMinor: 'yes',
+    }),
+  });
+
+  const data = await response.json();
+  if (!data.isSuccess) {
+    throw new Error(data.message);
+  }
+
+  return data;
+}
+
+// Graphの追加
+export async function createPixelaGraph(id: string) {
+  const response = await fetch(
+    `https://pixe.la/v1/users/${getPixelaUsername(id)}/graphs`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-USER-TOKEN': getPixelaToken(id),
+      },
+      body: JSON.stringify({
+        id: 'hayaoki-graph',
+        name: 'hayaoki',
+        type: 'int',
+        unit: 'point',
+        color: 'shibafu',
+        timezone: 'Asia/Tokyo',
+      }),
+    }
+  );
+
+  return await response.json();
+}
+
+// Userの削除
+export async function deletePixelaUser(id: string) {
+  const response = await fetch(
+    `https://pixe.la/v1/users/${getPixelaUsername(id)}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-USER-TOKEN': getPixelaToken(id),
+      },
+    }
+  );
+
+  return await response.json();
+}
