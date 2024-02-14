@@ -38,6 +38,29 @@ export async function createPixelaUser(id: string): Promise<any> {
   return data;
 }
 
+// Userの更新
+export async function updatePixelaUser(id: string) {
+  let response: Response;
+  let isSuccess = false;
+  do {
+    response = await fetch(`https://pixe.la/@${getPixelaUsername(id)}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-USER-TOKEN': getPixelaToken(id),
+      },
+      body: JSON.stringify({
+        timezone: 'Asia/Tokyo',
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+    isSuccess = data.isSuccess;
+  } while (!isSuccess);
+
+  return await response.json();
+}
+
 // Graphの追加
 export async function createPixelaGraph(id: string) {
   const response = await fetch(
@@ -54,10 +77,56 @@ export async function createPixelaGraph(id: string) {
         type: 'int',
         unit: 'point',
         color: 'shibafu',
-        timezone: 'Asia/Tokyo',
       }),
     }
   );
+
+  return await response.json();
+}
+
+// Graphの更新
+export async function updatePixelaGraph(id: string) {
+  const response = await fetch(
+    `https://pixe.la/v1/users/${getPixelaUsername(id)}/graphs/hayaoki-graph`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-USER-TOKEN': getPixelaToken(id),
+      },
+      body: JSON.stringify({
+        name: 'hayaoki',
+        type: 'int',
+        unit: 'point',
+        color: 'shibafu',
+        timezone: 'UTC',
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  console.log(data);
+
+  return await response.json();
+}
+
+// Graphの取得
+export async function getPixelaGraph(id: string) {
+  const response = await fetch(
+    `https://pixe.la/v1/users/${getPixelaUsername(id)}/graphs`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-USER-TOKEN': getPixelaToken(id),
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  console.log(data);
 
   return await response.json();
 }
