@@ -40,23 +40,16 @@ export async function createPixelaUser(id: string): Promise<any> {
 
 // Userの更新
 export async function updatePixelaUser(id: string) {
-  let response: Response;
-  let isSuccess = false;
-  do {
-    response = await fetch(`https://pixe.la/@${getPixelaUsername(id)}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-USER-TOKEN': getPixelaToken(id),
-      },
-      body: JSON.stringify({
-        timezone: 'Asia/Tokyo',
-      }),
-    });
-    const data = await response.json();
-    console.log(data);
-    isSuccess = data.isSuccess;
-  } while (!isSuccess);
+  const response = await fetch(`https://pixe.la/@${getPixelaUsername(id)}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-USER-TOKEN': getPixelaToken(id),
+    },
+    body: JSON.stringify({
+      pinnedGraphID: 'hayaoki-graph',
+    }),
+  });
 
   return await response.json();
 }

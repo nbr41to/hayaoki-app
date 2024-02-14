@@ -6,6 +6,7 @@ import {
   createPixelaUser,
   deletePixelaUser,
   findPixelaUser,
+  updatePixelaUser,
 } from '@/lib/pixela';
 import {useState} from 'react';
 import {getPixelaGraphUrl, getPixelaProfileUrl} from '@/utils';
@@ -28,6 +29,7 @@ export default function Home() {
       } else if (existNotionUser) {
         await createPixelaUser(discordId);
         await createPixelaGraph(discordId);
+        await updatePixelaUser(discordId);
       } else if (existPixelaUser) {
         await createNotionUser({name, discordId});
       } else {
